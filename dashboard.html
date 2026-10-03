@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <h2>Online Examination System</h2>
+    <div class="header-actions">
+        <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<main class="dashboard-container">
+
+    <section class="welcome-box">
+        <h1 id="welcomeMessage">Welcome, Student!</h1>
+        <p>Welcome to your student dashboard.</p>
+        <p id="studentEmail"></p>
+    </section>
+
+    <h2>Available Examinations</h2>
+
+    <div class="exam-grid">
+
+        <!-- HTML EXAM -->
+        <div class="exam-card">
+            <h3>HTML, CSS & JavaScript Test</h3>
+            <p>Subject: Web Development</p>
+            <p>Total Questions: 10</p>
+            <p>Duration: 10 Minutes</p>
+
+            <button class="start-btn"
+                onclick="startExam('HTML, CSS & JavaScript Test')">
+                Start Exam
+            </button>
+        </div>
+
+        <!-- C PROGRAMMING EXAM -->
+        <div class="exam-card">
+            <h3>C Programming Test</h3>
+            <p>Subject: C Programming</p>
+            <p>Total Questions: 10</p>
+            <p>Duration: 10 Minutes</p>
+
+            <button class="start-btn"
+                onclick="startExam('C Programming Test')">
+                Start Exam
+            </button>
+        </div>
+
+    </div>
+</main>
+
+<script>
+async function checkLogin() {
+    try {
+        const response = await fetch("backend/session_check.php");
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            window.location.href = "index.html";
+            return;
+        }
+
+        document.getElementById("welcomeMessage").textContent =
+            "Welcome, " + data.name + "!";
+
+        document.getElementById("studentEmail").textContent =
+            "Email: " + data.email;
+
+    } catch (error) {
+        alert("Server connection error. Please try again.");
+        console.error(error);
+    }
+}
+
+function startExam(examName) {
+    localStorage.removeItem("examResult");
+
+    window.location.href =
+        "exam.html?exam_name=" + encodeURIComponent(examName);
+}
+
+function logout() {
+    fetch("backend/logout.php")
+        .finally(function() {
+            localStorage.removeItem("studentName");
+            localStorage.removeItem("studentEmail");
+            window.location.href = "index.html";
+        });
+}
+
+checkLogin();
+</script>
+
+</body>
+</html>

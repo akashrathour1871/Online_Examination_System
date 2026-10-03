@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Examination</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <h2>Online Examination</h2>
+    <div id="timer">10:00</div>
+</header>
+
+<div class="exam-layout">
+
+    <main class="question-area">
+
+        <div class="question-top">
+            <strong id="examTitle">Web Development Test</strong>
+
+            <span>
+                Question
+                <span id="questionNumber">1</span>
+                /
+                <span id="totalQuestions">10</span>
+            </span>
+        </div>
+
+        <h3 id="question"></h3>
+
+        <div class="options"></div>
+
+        <div class="navigation">
+
+            <button
+                id="previousBtn"
+                onclick="previousQuestion()">
+                Previous
+            </button>
+
+            <button
+                id="nextBtn"
+                onclick="nextQuestion()">
+                Next
+            </button>
+
+            <button
+                id="submitBtn"
+                onclick="submitExam()">
+                Submit Exam
+            </button>
+
+        </div>
+
+    </main>
+
+    <aside class="question-palette">
+
+        <h3>Question Palette</h3>
+
+        <div class="counts">
+            <div>
+                Attempted:
+                <strong id="attemptedCount">0</strong>
+            </div>
+
+            <div>
+                Remaining:
+                <strong id="remainingCount">10</strong>
+            </div>
+        </div>
+
+        <div
+            id="questionNumbers"
+            class="question-numbers">
+        </div>
+
+        <div class="legend">
+
+            <div>
+                <span class="green"></span>
+                Attempted
+            </div>
+
+            <div>
+                <span class="yellow"></span>
+                Current question
+            </div>
+
+            <div>
+                <span class="white"></span>
+                Not answered
+            </div>
+
+        </div>
+
+    </aside>
+
+</div>
+
+<script src="exam.js"></script>
+
+</body>
+</html>

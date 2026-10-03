@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="login-page">
+
+    <div class="login-card">
+        <h1>Online Examination System</h1>
+        <p class="subtitle">Student Login</p>
+
+        <div>
+            <button type="button" id="registerTab">
+                Register
+            </button>
+
+            <button type="button" id="loginTab">
+                Login
+            </button>
+        </div>
+
+        <form id="loginForm">
+
+            <label for="studentName">Full Name</label>
+            <input
+                type="text"
+                id="studentName"
+                placeholder="Enter your name"
+            >
+
+            <label for="studentPhone">Mobile Number</label>
+            <input
+                type="tel"
+                id="studentPhone"
+                name="phone"
+                placeholder="Enter 10-digit mobile number"
+                maxlength="10"
+                pattern="[0-9]{10}"
+            >
+
+            <label for="studentEmail">Email Address</label>
+            <input
+                type="email"
+                id="studentEmail"
+                placeholder="Enter your email"
+                required
+            >
+
+            <label for="studentPassword">Password</label>
+            <input
+                type="password"
+                id="studentPassword"
+                placeholder="Create a password"
+                minlength="6"
+                required
+            >
+
+            <button type="submit" class="primary-btn">
+                Register
+            </button>
+
+        </form>
+
+        <p class="small-text">Enter your details to start.</p>
+    </div>
+
+<script>
+let mode = "register";
+
+const form = document.getElementById("loginForm");
+const registerTab = document.getElementById("registerTab");
+const loginTab = document.getElementById("loginTab");
+
+const passwordField = document.getElementById("studentPassword");
+const nameField = document.getElementById("studentName");
+const phoneField = document.getElementById("studentPhone");
+const emailField = document.getElementById("studentEmail");
+
+const nameLabel = document.querySelector('label[for="studentName"]');
+const phoneLabel = document.querySelector('label[for="studentPhone"]');
+
+const submitButton = form.querySelector("button[type='submit']");
+
+function setMode(newMode) {
+    mode = newMode;
+
+    if (mode === "register") {
+        nameField.style.display = "block";
+        nameLabel.style.display = "block";
+        nameField.required = true;
+
+        phoneField.style.display = "block";
+        phoneLabel.style.display = "block";
+        phoneField.required = true;
+
+        submitButton.textContent = "Register";
+        passwordField.placeholder = "Create a password";
+        passwordField.autocomplete = "new-password";
+
+    } else {
+        nameField.style.display = "none";
+        nameLabel.style.display = "none";
+        nameField.required = false;
+
+        phoneField.style.display = "none";
+        phoneLabel.style.display = "none";
+        phoneField.required = false;
+
+        submitButton.textContent = "Login";
+        passwordField.placeholder = "Enter your password";
+        passwordField.autocomplete = "current-password";
+    }
+}
+
+registerTab.addEventListener("click", function() {
+    setMode("register");
+});
+
+loginTab.addEventListener("click", function() {
+    setMode("login");
+});
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const name = nameField.value.trim();
+    const email = emailField.value.trim();
+    const password = passwordField.value;
+    const phone = phoneField.value.trim();
+
+    if (!email || password.length < 6) {
+        alert("Enter email and password (minimum 6 characters).");
+        return;
+    }
+
+    if (mode === "register" && !name) {
+        alert("Please enter your full name.");
+        return;
+    }
+
+    if (mode === "register" && !/^[0-9]{10}$/.test(phone)) {
+        alert("Please enter a valid 10-digit mobile number.");
+        return;
+    }
+
+    const endpoint = mode === "register"
+        ? "backend/register.php"
+        : "backend/login.php";
+
+    const payload = mode === "register"
+        ? {
+            name: name,
+            email: email,
+            phone: phone,
+            password: password
+          }
+        : {
+            email: email,
+            password: password
+          };
+
+    try {
+        const response = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            alert(data.message || "Request failed.");
+            return;
+        }
+
+        localStorage.setItem("studentName", data.name);
+localStorage.setItem("studentEmail", data.email);
+
+if (mode === "login") {
+    localStorage.setItem("studentPhone", data.phone || "");
+} else {
+    localStorage.setItem("studentPhone", phone);
+}
+
+        alert(data.message);
+
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        alert("Server error. Check XAMPP Apache and MySQL.");
+        console.error(error);
+    }
+});
+
+setMode("register");
+</script>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Result</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <h2>Online Examination System</h2>
+</header>
+
+<main class="result-container">
+    <div class="result-card">
+        <h1>Exam Result</h1>
+
+        <div class="result-details">
+            <div>Student Name:
+                <strong id="studentName">-</strong>
+            </div>
+
+            <div>Mobile Number:
+                <strong id="studentPhone">-</strong>
+            </div>
+        </div>
+
+        <div class="score" id="score">0 / 10</div>
+
+        <div id="status"></div>
+
+        <div class="result-details">
+            <div>Correct Answers:
+                <strong id="correct">0</strong>
+            </div>
+
+            <div>Incorrect Answers:
+                <strong id="incorrect">0</strong>
+            </div>
+
+            <div>Percentage:
+                <strong id="percentage">0%</strong>
+            </div>
+
+            <div>Date:
+                <strong id="date">-</strong>
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <button onclick="retakeExam()">Retake Exam</button>
+
+            <button class="secondary-btn" onclick="goDashboard()">
+                Dashboard
+            </button>
+        </div>
+    </div>
+</main>
+
+<script>
+    const name = localStorage.getItem("studentName");
+    const phone = localStorage.getItem("studentPhone");
+    const savedResult = localStorage.getItem("examResult");
+
+    if (!name || !savedResult) {
+        window.location.href = "index.html";
+    } else {
+        const result = JSON.parse(savedResult);
+
+        document.getElementById("studentName").textContent =
+            name;
+
+        document.getElementById("studentPhone").textContent =
+            phone || "Not available";
+
+        document.getElementById("score").textContent =
+            result.score + " / " + result.total;
+
+        document.getElementById("correct").textContent =
+            result.score;
+
+        document.getElementById("incorrect").textContent =
+            result.total - result.score;
+
+        document.getElementById("percentage").textContent =
+            result.percentage + "%";
+
+        document.getElementById("date").textContent =
+            result.date || new Date().toLocaleDateString();
+
+        const status = document.getElementById("status");
+
+        if (result.percentage >= 40) {
+            status.textContent = "PASS";
+            status.className = "pass";
+        } else {
+            status.textContent = "FAIL";
+            status.className = "fail";
+        }
+    }
+
+    function retakeExam() {
+        localStorage.removeItem("examResult");
+        window.location.href = "exam.html";
+    }
+
+    function goDashboard() {
+        window.location.href = "dashboard.html";
+    }
+</script>
+
+</body>
+</html>
